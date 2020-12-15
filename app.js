@@ -1,58 +1,91 @@
 const express = require("express");
-const bodyParser = require ("body-parser");
-
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 const app = express();
+
+let items = ["Buy food", "Massage", "Shopping"];
+let workItems = [];
 
 app.set("view engine", "ejs");
 
-app.get("/", function(req, res){
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+app.use(express.static("public"));
 
-  var today = new Date();
+mongoose.connect("mongodb://localhost:27017/todolistDB", {useNewUrlParser: true});
 
-  var options = {
-    weekday: "long",
-    day: "numeric",
-    month: "long"
-  };
-  var day = today.toLocaleDateString("en-US", options);
+const itemsSchema = {name: String};
+const Item = mongoose.model("Item", itemsSchema);
 
-
-  // var currentDay = today.getDay();
-  // var day = "";
-  // switch (currentDay) {
-  //   case 0:
-  //     day = "Sunday";
-  //     break;
-  //
-  //   case 1:
-  //     day = "Monday";
-  //     break;
-  //
-  //   case 2:
-  //     day = "Tuesday";
-  //     break;
-  //
-  //   case 3:
-  //     day = "Wednesday";
-  //     break;
-  //
-  //   case 4:
-  //     day = "Thursday";
-  //     break;;
-  //
-  //   case 5:
-  //     day = "Friday";
-  //     break;
-  //
-  //   case 6:
-  //     day = "Saturday";
-  //     break;
-  //   default:
-  //   console.log("Error: current day is equal to: " + currentDay);
-  // }
-    res.render("list.ejs", {kindofday:day});
+const item1 = new Item({
+  name: "Welcome to your todolist!"
+});
+const item2 = new Item({
+  name: "hey!"
 });
 
-app.listen(3000, function(){
+const item3 = new Item({
+  name: "Hello!"
+});
+
+const defaultItems = [item1, item2, item3];
+
+// Item.insertMany(defaultItems, function(err){
+//   if(err){
+//     console.log(err);
+//   } else{
+//     console.log("Successfully saved default items to DB.");
+//   }
+// });
+
+app.get("/", function(req, res) {
+
+      Item.find({}, function(err, foundItems) {
+
+          if (foundItems.length === 0) {
+
+            Item.insertMany(defaultItems, function(err) {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log("Successfully saved default items to DB.");
+              }
+            });
+            res.redirect("/");
+          } else {
+            res.render("list.ejs", {
+              ListTitle: "Today",
+              newListItems: foundItems
+            });
+          };
+      });
+    });
+
+app.post("/", function(req, res) {
+  item = req.body.newItem;
+  if (req.body.list === "Work") {
+    workItems.push(item);
+    res.redirect("/work");
+  } else {
+    items.push(item);
+    res.redirect("/");
+  }
+
+
+});
+
+app.get("/work", function(req, res){
+  res.render("list.ejs", {ListTitle: "Work List", newListItems: workItems});
+});
+
+app.post("/work", function(req, res){
+  let item = req.body.newItem;
+  workItems.push(item);
+  res.redirect("/work");
+});
+
+
+app.listen(3000, function() {
   console.log("Server started on port 3000.");
 });
