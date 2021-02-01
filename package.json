@@ -1,18 +1,30 @@
 {
-  "name": "todolist-v1",
+  "name": "todolist",
   "version": "1.0.0",
-  "description": "",
+  "description": "To organize and track daily tasks",
   "main": "app.js",
+  "dependencies": {
+    "ejs": "^3.1.5",
+    "express": "^4.17.1",
+    "lodash": "^4.17.20",
+    "mongoose": "^5.11.14",
+    "node": "^15.4.0",
+    "nodemon": "^2.0.7",
+    "npm": "^6.14.11",
+    "npm-install-all": "^1.1.21"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jiaying-e/ToDoList.git"
+  },
+  "author": "Jiaying He",
   "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "ejs": "^2.6.1",
-    "express": "^4.16.3",
-    "lodash": "^4.17.11",
-    "mongoose": "^5.3.4"
-  }
+  "bugs": {
+    "url": "https://github.com/Jiaying-e/ToDoList/issues"
+  },
+  "homepage": "https://github.com/Jiaying-e/ToDoList#readme"
 }
